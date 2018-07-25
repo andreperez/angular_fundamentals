@@ -11,6 +11,15 @@
     padding-top: 10px;
     padding-left: 10px;
 }
+
+.list_item_par {
+    background-color: silver;
+}
+
+.list_item_impar {
+    background-color: white;
+}
+
 .avatar {
     width:150px;
     height:150px;
