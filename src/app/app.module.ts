@@ -17,6 +17,11 @@ const appRoutes: Routes = [
     },
     {
         path: 'search',
+        redirectTo: '/search/angular',
+        pathMatch: 'full'
+    },
+    {
+        path: 'search/:query',
         component: GitSearchComponent,
         data: {
             title: 'Git Search'
