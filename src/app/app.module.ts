@@ -2,18 +2,22 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { GitSearchService } from './git-search.service';
+import { GitSearchComponent } from './git-search/git-search.component';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
-  imports: [
-    BrowserModule,
-    HttpClientModule
-  ],
-  providers: [GitSearchService],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        GitSearchComponent
+    ],
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        FormsModule
+    ],
+    providers: [GitSearchService],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }
