@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 
 import { GitSearchService } from "../git-search.service";
 import { GitSearch } from "../git-search";
+import { combineLatest } from '../../../node_modules/rxjs';
 
 @Component({
     selector: 'app-git-search',
@@ -15,6 +16,7 @@ export class GitSearchComponent implements OnInit {
     searchQuery: string;
     title: string;
     displayQuery: string;
+    page: number;
 
     constructor(
         private gitSearchService: GitSearchService,
@@ -23,20 +25,26 @@ export class GitSearchComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.route.paramMap.subscribe( (params: ParamMap) => {
-            this.searchQuery = params.get('query');
-            this.displayQuery = params.get('query');
-            return this.gitSearch();
-        })
 
-        this.route.data.subscribe(result => {
-            console.log(result);
-            this.title = result.title;
+        const combined = combineLatest(this.route.params, this.route.queryParams, this.route.data);
+
+        combined.subscribe(([params, queryParams, data]) => {
+            console.log(params);
+            console.log(queryParams);
+            console.log(data);
+
+            this.searchQuery = params.query;
+            this.displayQuery = params.query;
+            this.page = (queryParams.page == null ? 1 : parseInt(queryParams.page));
+            this.title = data.title;
+
+            return this.gitSearch();
         });
+
     }
 
     gitSearch = () => {
-        this.gitSearchService.gitSearch(this.searchQuery).then((response) => {
+        this.gitSearchService.gitSearch(this.searchQuery, this.page).then((response) => {
             this.searchResults = response;
         }, (error) => {
             alert("Error: " + error.statusText)
@@ -44,8 +52,36 @@ export class GitSearchComponent implements OnInit {
     }
 
     sendQuery = () => {
+        this.page = 1;
         this.searchResults = null;
-        this.router.navigate(['/search/' + this.searchQuery]);
-      }
+        this.router.navigate(['/search/' + this.searchQuery],
+            {
+                queryParams:
+                    { page: this.page }
+            }
+        );
+    }
+
+    nextPage() {
+        this.router.navigate(
+            [`/search/${this.searchQuery}`],
+            {
+                queryParams:
+                    { page: this.page + 1 }
+            }
+        );
+    }
+
+    previousPage() {
+        this.page = (this.page === 1 ? 1 : this.page - 1);
+
+        this.router.navigate(
+            [`/search/${this.searchQuery}`],
+            {
+                queryParams:
+                    { page: this.page }
+            }
+        );
+    }
 
 }

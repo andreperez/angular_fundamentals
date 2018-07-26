@@ -3,6 +3,16 @@
 <input name="query" placeholder="Enter Search Here" [(ngModel)]="searchQuery" />
 <button (click)="sendQuery()">Submit</button>
 
+<br />
+<br />
+
+<nav>
+    <button (click)="previousPage()">Previous page</button>
+    <a>Page: {{page}}</a>
+    <button (click)="nextPage()">Next page</button>
+</nav>
+
+
 <div *ngIf="searchResults; else elseBlock">
     <div *ngIf="searchResults.total_count > 0; else elseBlock">
         <h3 class="total">Total Results: {{searchResults.total_count}}</h3>
